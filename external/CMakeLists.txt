@@ -14,12 +14,17 @@ add_definitions(
 ### GLFW ###
 
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "Build the GLFW documentation")
+
+if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+else()
 add_subdirectory (glfw-3.1.2)
 
 include_directories(
 	glfw-3.1.2/include/GLFW/
 	glew-1.13.0/include/
 )
+endif()
+
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 set(OPENGL_LIBRARY
@@ -38,6 +43,8 @@ endif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
 ### GLEW ###
 
+if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+else()
 set(GLEW_SOURCE
 	glew-1.13.0/src/glew.c
 )
@@ -53,6 +60,7 @@ target_link_libraries(GLEW_1130
 	${OPENGL_LIBRARY}
 	${EXTRA_LIBS}
 )
+endif()
 
 
 ### ANTTWEAKBAR ###

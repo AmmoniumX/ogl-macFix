@@ -2,6 +2,9 @@
 cmake_minimum_required (VERSION 3.0)
 project (Tutorials)
 
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 find_package(OpenGL REQUIRED)
 
 
@@ -30,23 +33,54 @@ if(INCLUDE_DISTRIB)
 	add_subdirectory(distrib)
 endif(INCLUDE_DISTRIB)
 
-
+if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+  	set(GL_EXTERNAL_INCLUDE
+		/opt/homebrew/opt/glfw/include
+		/opt/homebrew/opt/glm/include
+		/opt/homebrew/opt/glew/include
+	)
+else()
+  	set(GL_EXTERNAL_INCLUDE
+		external/glfw-3.1.2/include/
+		external/glm-0.9.7.1/
+		external/glew-1.13.0/include/
+	)
+endif()
 
 include_directories(
+	${GL_EXTERNAL_INCLUDE}
 	external/AntTweakBar-1.16/include/
-	external/glfw-3.1.2/include/
-	external/glm-0.9.7.1/
-	external/glew-1.13.0/include/
 	external/assimp-3.0.1270/include/
 	external/bullet-2.81-rev2613/src/
 	.
 )
 
+if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+  	link_directories(
+		/opt/homebrew/opt/glfw/lib
+		/opt/homebrew/opt/glew/lib
+		/opt/homebrew/opt/glm/lib
+	)
+endif()	
+
 set(ALL_LIBS
 	${OPENGL_LIBRARY}
 	glfw
-	GLEW_1130
 )
+
+if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+	set(ALL_LIBS
+		${ALL_LIBS}
+		glew
+		glm
+	)
+else()
+	set(ALL_LIBS
+		${ALL_LIBS}
+		GLEW_1130
+	)
+endif()
+
 
 add_definitions(
 	-DTW_STATIC
@@ -508,6 +542,7 @@ target_link_libraries(tutorial17_rotations
 	${ALL_LIBS}
 	ANTTWEAKBAR_116_OGLCORE_GLFW
 )
+
 # Xcode and Visual working directories
 set_target_properties(tutorial17_rotations PROPERTIES XCODE_ATTRIBUTE_CONFIGURATION_BUILD_DIR "${CMAKE_CURRENT_SOURCE_DIR}/tutorial17_rotations/")
 create_target_launcher(tutorial17_rotations WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/tutorial17_rotations/")
@@ -607,6 +642,11 @@ target_link_libraries(misc05_picking_BulletPhysics
 set_target_properties(misc05_picking_BulletPhysics PROPERTIES XCODE_ATTRIBUTE_CONFIGURATION_BUILD_DIR "${CMAKE_CURRENT_SOURCE_DIR}/misc05_picking/")
 create_target_launcher(misc05_picking_BulletPhysics WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/misc05_picking/")
 
+if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+	set_target_properties(tutorial17_rotations misc05_picking_slow_easy misc05_picking_custom misc05_picking_BulletPhysics
+		PROPERTIES EXCLUDE_FROM_ALL 1 EXCLUDE_FROM_DEFAULT_BUILD 1)
+else()
+endif()
 
 
 add_executable(tutorial18_billboards
