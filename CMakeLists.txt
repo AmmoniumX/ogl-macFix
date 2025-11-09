@@ -24,7 +24,7 @@ endif()
 add_subdirectory (external)
 
 # On Visual 2005 and above, this module can set the debug working directory
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/external/rpavlik-cmake-modules-fe2273")
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/external/rpavlik-cmake-modules-76c1eb4")
 include(CreateLaunchers)
 include(MSVCMultipleProcessCompile) # /MP
 
@@ -115,7 +115,6 @@ target_link_libraries(tutorial02_red_triangle
 # Xcode and Visual working directories
 set_target_properties(tutorial02_red_triangle PROPERTIES XCODE_ATTRIBUTE_CONFIGURATION_BUILD_DIR "${CMAKE_CURRENT_SOURCE_DIR}/tutorial02_red_triangle/")
 create_target_launcher(tutorial02_red_triangle WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/tutorial02_red_triangle/")
-create_default_target_launcher(tutorial02_red_triangle WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/tutorial02_red_triangle/") # tut 1 is not the default or people would complain that tut 2 doesn't work
 
 # Tutorial 3
 add_executable(tutorial03_matrices 
