@@ -35,17 +35,31 @@ if(INCLUDE_DISTRIB)
 endif(INCLUDE_DISTRIB)
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-  	set(GL_EXTERNAL_INCLUDE
-		/opt/homebrew/opt/glfw/include
-		/opt/homebrew/opt/glm/include
-		/opt/homebrew/opt/glew/include
-	)
+# check if library exists
+set(MACOS_REQUIRED_PATHS
+	"/opt/homebrew/opt/glfw"
+	"/opt/homebrew/opt/glm"
+	"/opt/homebrew/opt/glew"
+)
+foreach(PATH_ITEM ${MACOS_REQUIRED_PATHS})
+	if(NOT EXISTS "${PATH_ITEM}")
+		message(FATAL_ERROR "
+${PATH_ITEM} does not exist!!
+Please run \"brew install glfw glm glew\" in your terminal!")
+	endif()
+endforeach()
+
+set(GL_EXTERNAL_INCLUDE
+	/opt/homebrew/opt/glfw/include
+	/opt/homebrew/opt/glm/include
+	/opt/homebrew/opt/glew/include
+)
 else()
-  	set(GL_EXTERNAL_INCLUDE
-		external/glfw-3.1.2/include/
-		external/glm-0.9.7.1/
-		external/glew-1.13.0/include/
-	)
+set(GL_EXTERNAL_INCLUDE
+	external/glfw-3.1.2/include/
+	external/glm-0.9.7.1/
+	external/glew-1.13.0/include/
+)
 endif()
 
 include_directories(
@@ -57,11 +71,11 @@ include_directories(
 )
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-  	link_directories(
-		/opt/homebrew/opt/glfw/lib
-		/opt/homebrew/opt/glew/lib
-		/opt/homebrew/opt/glm/lib
-	)
+link_directories(
+	/opt/homebrew/opt/glfw/lib
+	/opt/homebrew/opt/glew/lib
+	/opt/homebrew/opt/glm/lib
+)
 endif()	
 
 set(ALL_LIBS
@@ -70,16 +84,17 @@ set(ALL_LIBS
 )
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-	set(ALL_LIBS
-		${ALL_LIBS}
-		glew
-		glm
-	)
+set(ALL_LIBS
+	${ALL_LIBS}
+	glew
+	glm
+)
 else()
-	set(ALL_LIBS
-		${ALL_LIBS}
-		GLEW_1130
-	)
+set(ALL_LIBS
+	${ALL_LIBS}
+	GLEW_1130
+)
+
 endif()
 
 
